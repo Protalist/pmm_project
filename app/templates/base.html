@@ -1,0 +1,25 @@
+<html>
+    <head>
+      <title>pmm Covid</title>
+
+    </head>
+    <body>
+      <div>Home: <a href="/index">Home</a></div>
+      <hr>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+
+        
+        {% block content %}{% endblock %}
+        <!--0a79e93851744f93054732d02c43c4ab67281032:fa07d4d8da114b1af25061f71019621db931c5e8 
+        Basic MGE3OWU5Mzg1MTc0NGY5MzA1NDczMmQwMmM0M2M0YWI2NzI4MTAzMjpmYTA3ZDRkOGRhMTE0YjFhZjI1MDYxZjcxMDE5NjIxZGI5MzFjNWU4-->
+        
+    </body>
+</html>
