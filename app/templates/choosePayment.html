@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Insert dta for the company</h1>
+<form action="" method="post" novalidate>
+    <select name= payment method="GET" action="/">
+        {% for payment in payments %}
+        <option value= "{{payment}}" SELECTED>{{payment}}</option>"
+        {% endfor %}
+    </select>    
+    <input type="submit">
+</form>
+{% endblock %}

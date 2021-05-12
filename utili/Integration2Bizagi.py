@@ -8,7 +8,7 @@ class Integration2Bizagi:
     "startcaseprocess":"/odata/data/processes(Insert_Process)/start",
     "getWorkItems": "/odata/data/processes(Insert_Process)/cases(insert_case)/workitems",
     "executeWorkItem":"/odata/data/processes(Insert_Process)/cases(insert_case)/workitems(insert_work)/next"}
-    headers={"Authorization":"Bearer 562644b82ed553e583877806c264d9137c149590",
+    headers={"Authorization":"Bearer 6959074c976924d1ce8455899160193892f5be16",
 "Content-type":'application/json'}
 
     def __init__(self,localhost="none",outhCodeBase64="None"):
@@ -19,6 +19,7 @@ class Integration2Bizagi:
         my_headers = {"Content-type":"application/x-www-form-urlencoded",
 "Authorization":"Basic "+base64}
         response = requests.post(self.baseURL+self.endpopints["login"], headers=my_headers,data = "grant_type=client_credentials&scope=api")
+        print(response.json())
         self.headers["Authorization"]="Bearer "+response.json()['access_token']
         print(self.headers)
 
