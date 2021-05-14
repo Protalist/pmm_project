@@ -1,0 +1,23 @@
+{% block content %}
+
+<h1>cases </h1>
+    <ol>
+        <!-- For loop logic of jinja template -->
+        {%for case in cases%} 
+        <li>{{case["id"]}} {{case["processName"]}} {{case["estimatedSolutionDate"]}}
+            {%for workitem in case["workitems"]%}
+                {{workitem["taskName"]}} {{workitem["estimatedSolutionDate"]}}  
+
+                {% if case["processName"]=="Patient" %}
+                    <a href="{{ url_for('check',caseid=case['id'],workitems=workitem['id'],taskName=workitem['taskName']) }}"> complete</a>
+                {% else %}
+                    Wait a respons
+                {% endif %}
+            {%endfor%}
+        
+
+    </li>
+        {%endfor%}
+    </ol>
+      
+{% endblock %}

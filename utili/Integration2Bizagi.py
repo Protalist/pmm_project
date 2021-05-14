@@ -1,5 +1,6 @@
 import requests
 
+
 class Integration2Bizagi:
     baseURL=""
     authanticationCode=""
@@ -7,7 +8,9 @@ class Integration2Bizagi:
     "getProcessByname":"/odata/data/processes?$filter=name eq ",
     "startcaseprocess":"/odata/data/processes(Insert_Process)/start",
     "getWorkItems": "/odata/data/processes(Insert_Process)/cases(insert_case)/workitems",
-    "executeWorkItem":"/odata/data/processes(Insert_Process)/cases(insert_case)/workitems(insert_work)/next"}
+    "executeWorkItem":"/odata/data/processes(Insert_Process)/cases(insert_case)/workitems(insert_work)/next",
+    "excecuteQuery": "/odata/data/queries(insert_query)/executeQuery",#ffd50f9f-f997-4a7b-b092-f7a947e8e914
+    "getEntities": "/odata/data/entities(insert_idEntities)/values"} #5860f4c5-7adc-47aa-9e22-bbe01e2f1186
     headers={"Authorization":"Bearer 6959074c976924d1ce8455899160193892f5be16",
 "Content-type":'application/json'}
 
@@ -35,12 +38,16 @@ class Integration2Bizagi:
          print(response)
          return response.json()
     
-    def getWorkItemCase(self, process="0",case_id="0"):
+    def getWorkItemCase(self, process="0",case_id="0",taskName=""):
 
         response = requests.get(self.baseURL+self.endpopints["getWorkItems"].replace("Insert_Process",process).replace("insert_case",str(case_id)), headers=self.headers)
         print(response)
         if len(response.json()["value"])>0:
-            return response.json()["value"][0]
+            for task in response.json()["value"]:
+                print(task["taskName"])
+                if  task["taskName"] == taskName:
+                    return task
+            return []
         else:
             return []
     
@@ -50,3 +57,12 @@ class Integration2Bizagi:
         , headers=self.headers,data=str(data))
         print(response)
         return response.json()
+    
+
+    def excecuteQuery(self,queryid="",data={"startParameters": []}):
+        response=requests.post(self.baseURL+self.endpopints["excecuteQuery"].replace("insert_query",queryid),headers=self.headers,data=str(data))
+        return response.json()["value"]
+    
+    def getEntities(self,entitiesId):
+        response=requests.post(self.baseURL+self.endpopints["getEntities"].replace("insert_idEntities",entitiesId),headers=self.headers)
+        return response.json()["value"]

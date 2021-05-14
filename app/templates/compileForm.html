@@ -29,6 +29,13 @@
         {% endfor %}
 
     </p>
+    <p>
+    <select name= city  action="/">
+        {% for ci in city %}
+        <option value= "{{ci}}" SELECTED>{{ci}}</option>"
+        {% endfor %}
+    </select>    
+    </p>
     <p>{{ form.submit() }}</p>
 </form>
 {% endblock %}

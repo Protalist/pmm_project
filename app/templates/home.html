@@ -7,7 +7,7 @@
     {{ form.hidden_tag() }}
     <p>
         {{ form.insuranceId.label }}<br>
-        {{ form.insuranceId(size=32) }}
+        {{ form.insuranceId(size=32, value=insuranceId) }}
         {% for error in form.insuranceId.errors %}
         <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
