@@ -1,3 +1,4 @@
+from app.forms.makePaymentForm import makePaymentForm
 from app import app,bizagi,process_id,city
 
 from flask import render_template, flash, redirect, session,request,url_for
@@ -9,10 +10,12 @@ from utili.globalVariable import payments, queries
 
 import random
 import datetime
+import string    
 
 idinsurance="insuranceId"
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/home', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
 def home():
     form = InitialData()
     if request.method == "GET" and not idinsurance  in session :
@@ -83,14 +86,14 @@ def FillRequest():
                 "xpath":"Request.PatientInfo.Surname",
                 "value": form.surname.data
             }
-           # ,            {
-            #    "xpath":"Request.City",
-            #   "value": request.form["city"]
-            #}
+            ,            {
+               "xpath":"Request.PatientInfo.City",
+              "value": request.form["city"]
+            }
         ]}
             workExcecute= bizagi.executeWorkItemCase(process=process_id,case_id=session["case_id"],workitems=workitems["id"],data=data)
             print(workExcecute)
-            return redirect('/ChoosePayment')
+            return redirect('/index')
     print("dopo")
     #flash("something went wrong")
     return  render_template('compileForm.html',form=form,city=city)
@@ -103,8 +106,7 @@ def ChoosePayment():
         print(request.form["payment"])
         workitems=bizagi.getWorkItemCase(process=process_id,case_id=session["case_id"],taskName="ChoosePayment")
         print(workitems)
-        if len(workitems)>0 and workitems["taskName"] == "ChoosePayment":
-            print("trovato")
+        if len(workitems)>0 and workitems["taskName"] == "ChoosePayment" :
             data = {"startParameters":[
             {
                 "xpath":"Request.Payment",
@@ -113,9 +115,35 @@ def ChoosePayment():
         ]}
             workExcecute= bizagi.executeWorkItemCase(process=process_id,case_id=session["case_id"],workitems=workitems["id"],data=data)
             print(workExcecute)
-            return redirect('/end')
+            if request.form["payment"]==payments[1]:
+                return redirect(url_for("MakePayment"))
+            else:
+                return redirect('/end')
     print(payments)
     return  render_template('choosePayment.html',payments=payments)
+
+
+@app.route('/MakePayment', methods=['GET', 'POST'])
+def MakePayment():
+    form=makePaymentForm()
+    if request.method == 'POST':
+        workitems=bizagi.getWorkItemCase(process=process_id,case_id=session["case_id"],taskName="MakePayment")
+        print(workitems)
+        if len(workitems)>0 and workitems["taskName"] == "MakePayment" and form.validate_on_submit():
+            print("trovato")
+            S = 10  # number of characters in the string.  
+            # call random.choices() string module to find the string in Uppercase + numeric data.  
+            ran = ''.join(random.choices(string.ascii_uppercase + string.digits, k = S))    
+            data = {"startParameters":[
+            {
+               "xpath":"Request.PaymentNumber",
+              "value": ran
+            }
+            ]}
+            workExcecute= bizagi.executeWorkItemCase(process=process_id,case_id=session["case_id"],workitems=workitems["id"],data=data)
+            print(workExcecute)
+            return redirect("")
+    return render_template('makePayment.html',form=form)
 
 @app.route('/end', methods=['GET', 'POST'])
 def end():
@@ -132,23 +160,25 @@ def check(caseid,workitems,taskName):
         flash("something went wrong")
         return redirect(url_for("home"))
 
+
+
 @app.route('/getPayment', methods=['GET', 'POST'])
 def getPayment():
     if random.uniform(0, 1)>0.25:
-        return {"Payment": {"value":False}}
+        return {"Payment": {"value":True}}
     else:
         return {"Payment": {"value":False}}
 
 @app.route('/getAppointment', methods=['GET', 'POST'])
 def getAppointment():
-    hour=random.uniform(9, 19)
+    hour=random.uniform(8, 20)
     
-    tomorrow = datetime.datetime.now() + datetime.timedelta(days=1,hours=hour)
-    print(tomorrow)
-    if random.uniform(0, 1)>0.25:
-        return {"Payment": {"value":tomorrow,"time":str(datetime.time())}}
-    else:
-        return {"Payment": {"value":tomorrow,"time":str(datetime.time())}}
+    tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
+    print(int(hour))
+    tomorrow=tomorrow.replace(hour=int(hour))
+    tomorrow=tomorrow.strftime("%m/%d/%Y %H:%M")
+    return {"Appointment": {"date": tomorrow}}
+   
 
 
 def checkCorrectWorkItem(processid,case_id,ExecutableWorkItem,taskName):
@@ -157,3 +187,4 @@ def checkCorrectWorkItem(processid,case_id,ExecutableWorkItem,taskName):
    if len(workitems)>0 and str(workitems["id"])==ExecutableWorkItem and workitems["taskName"]== taskName:
        return True
    return False
+

@@ -41,7 +41,7 @@ class Integration2Bizagi:
     def getWorkItemCase(self, process="0",case_id="0",taskName=""):
 
         response = requests.get(self.baseURL+self.endpopints["getWorkItems"].replace("Insert_Process",process).replace("insert_case",str(case_id)), headers=self.headers)
-        print(response)
+        print(response.json())
         if len(response.json()["value"])>0:
             for task in response.json()["value"]:
                 print(task["taskName"])
