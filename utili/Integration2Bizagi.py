@@ -9,6 +9,7 @@ class Integration2Bizagi:
     "startcaseprocess":"/odata/data/processes(Insert_Process)/start",
     "getWorkItems": "/odata/data/processes(Insert_Process)/cases(insert_case)/workitems",
     "executeWorkItem":"/odata/data/processes(Insert_Process)/cases(insert_case)/workitems(insert_work)/next",
+    "getCase":"/odata/data/cases(insert_case)",
     "excecuteQuery": "/odata/data/queries(insert_query)/executeQuery",#ffd50f9f-f997-4a7b-b092-f7a947e8e914
     "getEntities": "/odata/data/entities(insert_idEntities)/values"} #5860f4c5-7adc-47aa-9e22-bbe01e2f1186
     headers={"Authorization":"Bearer 6959074c976924d1ce8455899160193892f5be16",
@@ -66,3 +67,8 @@ class Integration2Bizagi:
     def getEntities(self,entitiesId):
         response=requests.post(self.baseURL+self.endpopints["getEntities"].replace("insert_idEntities",entitiesId),headers=self.headers)
         return response.json()["value"]
+    
+    def getcase(self,caseid):
+        response=requests.post(self.baseURL+self.endpopints["getCase"].replace("insert_case",str(caseid)),headers=self.headers)
+        return response.json()
+    

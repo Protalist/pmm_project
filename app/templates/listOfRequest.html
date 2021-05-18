@@ -4,7 +4,9 @@
     <ol>
         <!-- For loop logic of jinja template -->
         {%for case in cases%} 
-        <li>{{case["id"]}} {{case["processName"]}} {{case["estimatedSolutionDate"]}}
+        <li>{{case["id"]}} {{case["processName"]}} 
+        {%if case["closed"]==false%}
+            {{case["estimatedSolutionDate"]}}
             {%for workitem in case["workitems"]%}
                 {{workitem["taskName"]}} {{workitem["estimatedSolutionDate"]}}  
 
@@ -15,7 +17,8 @@
                 {% endif %}
             {%endfor%}
         
-
+    	{%else%} closed
+        {%endif%}
     </li>
         {%endfor%}
     </ol>

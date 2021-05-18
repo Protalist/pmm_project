@@ -37,6 +37,12 @@ def home():
         if len(response)==0:
             render_template('home.html',form=form)
         else:
+            cases={}
+            for i in response:
+                temp=bizagi.getcase(i["id"])
+                print(temp)
+                if "parameters" in temp:
+                    cases[i["id"]]=temp["parameters"]
             return render_template('listOfRequest.html',cases=response)
     return render_template('home.html',form=form,len=len(response))
 
