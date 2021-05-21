@@ -1,25 +1,49 @@
 <html>
-    <head>
-      <title>pmm Covid</title>
 
-    </head>
-    <body>
-      <div>Home: <a href="/index">Home</a></div>
-      <hr>
-      {% with messages = get_flashed_messages() %}
-        {% if messages %}
+<head>
+    <title>pmm Covid</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a href="/index">Home</a>
+            <a href="/init">New Case</a>
+            <a href="/exit">Exit</a>
+        </div>
+    </nav>
+    <div class="container">
+
+        {% with messages = get_flashed_messages() %} {% if messages %}
         <ul>
             {% for message in messages %}
-            <li>{{ message }}</li>
+            <div class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        {{ message }}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
             {% endfor %}
         </ul>
-        {% endif %}
-        {% endwith %}
+        <script>
+            var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+            var toastList = []
+            for (var i in toastElList) {
+                console.log(toastElList[i])
+                toastList.push(new bootstrap.Toast(toastElList[i], {}))
+            }
 
-        
-        {% block content %}{% endblock %}
+            toastList[0].show()
+        </script>
+        {% endif %} {% endwith %} {% block content %}{% endblock %}
         <!--0a79e93851744f93054732d02c43c4ab67281032:fa07d4d8da114b1af25061f71019621db931c5e8 
         Basic MGE3OWU5Mzg1MTc0NGY5MzA1NDczMmQwMmM0M2M0YWI2NzI4MTAzMjpmYTA3ZDRkOGRhMTE0YjFhZjI1MDYxZjcxMDE5NjIxZGI5MzFjNWU4-->
-        
-    </body>
+    </div>
+</body>
+
 </html>

@@ -1,14 +1,16 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 
 <h1>Insert dta for the company</h1>
 <form action="" method="post" novalidate>
-    <select name= payment method="GET" action="/">
+
+    <div class="mb-3">
+        <label class="form-label">Select A Payment method</label>
+        <select name=payment method="GET" action="/" class="form-select" aria-label="Default select example">
         {% for payment in payments %}
         <option value= "{{payment}}" SELECTED>{{payment}}</option>"
         {% endfor %}
-    </select>    
-    <input type="submit">
+    </select>
+    </div>
+    <input type="submit" type="button" class="btn btn-primary" value="Choose payment">
 </form>
 {% endblock %}

@@ -4,15 +4,21 @@
 
 <h1>Insert dta for the company</h1>
 <form action="" method="post" novalidate>
+
     {{ form.hidden_tag() }}
-    <p>
-        {{ form.insuranceId.label }}<br>
-        {{ form.insuranceId(size=32, value=insuranceId) }}
+
+<div class="mb-3">
+  <label class="form-label">{{ form.insuranceId.label }}</label>
+
+        {{ form.insuranceId(size=32, value=insuranceId, class="form-control") }}
         {% for error in form.insuranceId.errors %}
         <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
-    </p>
+       
+</div>
+
+ <p>{{ form.submit( type="submit", class="btn btn-primary" ) }}</p>
   
-    <p>{{ form.submit() }}</p>
+    
 </form>
 {% endblock %}

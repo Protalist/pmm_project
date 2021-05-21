@@ -11,6 +11,7 @@ from utili.globalVariable import payments, queries
 import random
 import datetime
 import string    
+import json
 
 idinsurance="insuranceId"
 @app.route('/', methods=['GET', 'POST'])
@@ -19,6 +20,7 @@ idinsurance="insuranceId"
 def home():
     form = InitialData()
     if request.method == "GET" and not idinsurance  in session :
+        print("cosa")
         return render_template('home.html',form=form)
     if request.method =="POST" or  idinsurance  in session :
         if  request.method =="POST":
@@ -35,7 +37,7 @@ def home():
         response=bizagi.excecuteQuery(queryid=queries["getCaseFromeInsuranceId"],data=data)
         print(response)
         if len(response)==0:
-            render_template('home.html',form=form)
+            return render_template('listOfRequest.html',cases=[], info=[])
         else:
             cases={}
             for i in response:
@@ -43,8 +45,14 @@ def home():
                 print(temp)
                 if "parameters" in temp:
                     cases[i["id"]]=temp["parameters"]
-            return render_template('listOfRequest.html',cases=response)
+            return render_template('listOfRequest.html',cases=response, info=cases)
     return render_template('home.html',form=form,len=len(response))
+
+@app.route('/exit', methods=['GET', 'POST'])
+def exit():
+    session.clear()
+    form = InitialData()
+    return redirect('/')
 
 @app.route('/init', methods=['GET', 'POST'])
 def initProcess():
@@ -100,6 +108,10 @@ def FillRequest():
             workExcecute= bizagi.executeWorkItemCase(process=process_id,case_id=session["case_id"],workitems=workitems["id"],data=data)
             print(workExcecute)
             return redirect('/index')
+        else:
+            flash("something went wrong")
+            return redirect('/index')
+            
     print("dopo")
     #flash("something went wrong")
     return  render_template('compileForm.html',form=form,city=city)
@@ -148,24 +160,37 @@ def MakePayment():
             ]}
             workExcecute= bizagi.executeWorkItemCase(process=process_id,case_id=session["case_id"],workitems=workitems["id"],data=data)
             print(workExcecute)
-            return redirect("")
-    return render_template('makePayment.html',form=form)
+            return redirect("/")
+        else:
+            return redirect("/")
+    amount=""
+    if "amount" in session:
+        amount=session["amount"]
+    return render_template('makePayment.html',form=form, amount=amount)
 
 @app.route('/end', methods=['GET', 'POST'])
 def end():
     return "congratulation"
 
 
-@app.route('/check/<caseid>/<workitems>/<taskName>', methods=['GET', 'POST'])
-def check(caseid,workitems,taskName):
+@app.route('/check/<caseid>/<workitems>/<taskName>/<info>', methods=['GET', 'POST'])
+def check(caseid,workitems,taskName,info):
+    print("ecco le tue info")
+    x=info
+    x=x.replace("'",'"')
+    x=x.replace("None",'"n"')
+    x=x.replace("False",'"False"')
+    x=x.replace("True",'"True"')
+    y=json.loads(x)
     response=checkCorrectWorkItem(process_id,caseid,workitems,taskName)
     if response:
         session["case_id"]=caseid
+        session["amount"]=y[0]["value"]
         return redirect(url_for(taskName))
     else:
         flash("something went wrong")
         return redirect(url_for("home"))
-
+  
 
 
 @app.route('/getPayment', methods=['GET', 'POST'])
@@ -177,13 +202,16 @@ def getPayment():
 
 @app.route('/getAppointment', methods=['GET', 'POST'])
 def getAppointment():
+    hospitals=bizagi.getEntities("cf62c824-07b0-462c-a58e-eb4e344dfd8d")
+    hospital=random.uniform(0, len(hospitals))
+    hospital=int(hospital)
     hour=random.uniform(8, 20)
     
     tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
     print(int(hour))
     tomorrow=tomorrow.replace(hour=int(hour))
     tomorrow=tomorrow.strftime("%m/%d/%Y %H:%M")
-    return {"Appointment": {"date": tomorrow}}
+    return {"Appointment": {"date": tomorrow,"hospital":hospitals[hospital]["parameters"][0]["value"]}}
    
 
 

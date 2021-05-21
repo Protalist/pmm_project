@@ -1,26 +1,47 @@
-{% block content %}
+{% extends "base.html" %} {% block content %}
 
 <h1>cases </h1>
-    <ol>
-        <!-- For loop logic of jinja template -->
-        {%for case in cases%} 
-        <li>{{case["id"]}} {{case["processName"]}} 
-        {%if case["closed"]==false%}
-            {{case["estimatedSolutionDate"]}}
-            {%for workitem in case["workitems"]%}
-                {{workitem["taskName"]}} {{workitem["estimatedSolutionDate"]}}  
 
-                {% if case["processName"]=="Patient" %}
-                    <a href="{{ url_for('check',caseid=case['id'],workitems=workitem['id'],taskName=workitem['taskName']) }}"> complete</a>
-                {% else %}
-                    Wait a respons
-                {% endif %}
-            {%endfor%}
-        
-    	{%else%} closed
-        {%endif%}
-    </li>
-        {%endfor%}
-    </ol>
-      
-{% endblock %}
+<!-- For loop logic of jinja template -->
+{%for case in cases%}
+<div class="card">
+    <h5 class="card-header"> Id={{case["id"]}} process={{case["processName"]}}</h5>
+    <div class="card-body">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-sm">
+                    Status: <br> 
+                        {%if case["closed"]==false%} 
+                            Estimated Solution Date={{case["estimatedSolutionDate"]}} <br/> 
+                            Actions= 
+                                {%for workitem in case["workitems"]%} 
+                                    {{workitem["taskName"]}} 
+                                    {{workitem["estimatedSolutionDate"]}} 
+                                    {% if case["processName"]=="Patient"%}
+                                        <a href="{{ url_for('check',caseid=case['id'],workitems=workitem['id'],taskName=workitem['taskName'],info=info[case["id"]]) }}"> complete</a> 
+                                    {% else %} 
+                                        Wait a response 
+                                    {% endif %} 
+                                {%endfor%} 
+                        {%else%} 
+                            closed 
+                        {%endif%}
+                </div>
+                <div class="col-sm">
+                    {%if case["closed"]==false%} 
+                        amount {{info[case["id"]][0]["value"]}}
+                    {%else%}
+                        Case Close all the information are sent from Email 
+                    {%endif%}
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="card-footer text-muted">
+        Creation Date {{case["creationDate"]}}
+    </div>
+</div>
+<br> {%endfor%} {% endblock %}

@@ -62,6 +62,8 @@ class Integration2Bizagi:
 
     def excecuteQuery(self,queryid="",data={"startParameters": []}):
         response=requests.post(self.baseURL+self.endpopints["excecuteQuery"].replace("insert_query",queryid),headers=self.headers,data=str(data))
+        print("--------------------------")
+        print(response.json())
         return response.json()["value"]
     
     def getEntities(self,entitiesId):

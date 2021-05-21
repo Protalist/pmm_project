@@ -4,4 +4,4 @@ from wtforms.validators import DataRequired
 
 class InitialData(FlaskForm):
     insuranceId = StringField('Insurance Id', validators=[DataRequired()])
-    submit = SubmitField('Sign In')
+    submit = SubmitField('Insert')
