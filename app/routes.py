@@ -200,6 +200,14 @@ def getPayment():
     else:
         return {"Payment": {"value":False}}
 
+@app.route('/getPayment/<PaymentNumber>', methods=['GET', 'POST'])
+def getPayment2(PaymentNumber):
+    print(PaymentNumber)
+    if random.uniform(0, 1)>0.0:
+        return {"Payment": {"value":True}}
+    else:
+        return {"Payment": {"value":False}}
+
 @app.route('/getAppointment', methods=['GET', 'POST'])
 def getAppointment():
     hospitals=bizagi.getEntities("cf62c824-07b0-462c-a58e-eb4e344dfd8d")

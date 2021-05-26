@@ -1,6 +1,7 @@
 {% extends "base.html" %} {% block content %}
-
+<div class="overflow-auto">
 <h1>cases </h1>
+
 
 <!-- For loop logic of jinja template -->
 {%for case in cases%}
@@ -44,4 +45,7 @@
         Creation Date {{case["creationDate"]}}
     </div>
 </div>
-<br> {%endfor%} {% endblock %}
+<br>
+
+ {%endfor%} </div>{% endblock %}
+
